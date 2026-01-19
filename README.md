@@ -16,7 +16,7 @@ A full-stack task management application built with React and Node.js, featuring
 - [Frontend Components](#-frontend-components)
 - [Backend Architecture](#-backend-architecture)
 - [Screenshots](#-screenshots)
-- [Contributing](#-contributing)
+
 
 ## ✨ Features
 
@@ -409,36 +409,3 @@ CREATE TABLE tasks (
 | /api/tasks | POST | createTask | AddTaskModal |
 | /api/tasks/:id | PUT | updateTask | TaskCard |
 | /api/tasks/:id | DELETE | deleteTask | TaskCard |
-
-## 🐛 Troubleshooting
-
-### Database Connection Issues
-- Verify PostgreSQL is running
-- Check database credentials in .env
-- Ensure database exists: CREATE DATABASE taskmanager;
-
-### Port Already in Use
-- Change PORT in Backend/.env
-- Update API_URL in Frontend/src/services/api.js
-
-### CORS Errors
-- Backend CORS is configured to allow all origins
-- Check if backend server is running
-
-### Build Issues
-- Clear node_modules and reinstall: rm -rf node_modules && npm install
-- Clear webpack cache: rm -rf Frontend/dist
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (git checkout -b feature/AmazingFeature)
-3. Commit your changes (git commit -m 'Add some AmazingFeature')
-4. Push to the branch (git push origin feature/AmazingFeature)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the ISC License.
