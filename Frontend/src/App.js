@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
-import Dashboard from './components/Dashboard';
-import PendingTasks from './components/PendingTasks';
-import CompletedTasks from './components/CompletedTasks';
-import RecentActivity from './components/RecentActivity';
 import ProgressBar from './components/ProgressBar';
+
+// Lazy load components
+const Dashboard = React.lazy(() => import('./components/Dashboard'));
+const PendingTasks = React.lazy(() => import('./components/PendingTasks'));
+const CompletedTasks = React.lazy(() => import('./components/CompletedTasks'));
+const RecentActivity = React.lazy(() => import('./components/RecentActivity'));
 
 function AppContent() {
   const location = useLocation();
@@ -24,12 +26,14 @@ function AppContent() {
         </header>
 
         <main key={location.pathname}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/pending" element={<PendingTasks />} />
-            <Route path="/completed" element={<CompletedTasks />} />
-            <Route path="/recent" element={<RecentActivity />} />
-          </Routes>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/pending" element={<PendingTasks />} />
+              <Route path="/completed" element={<CompletedTasks />} />
+              <Route path="/recent" element={<RecentActivity />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </div>

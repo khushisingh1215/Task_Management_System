@@ -1,7 +1,8 @@
 import React from 'react';
-import { updateTask, deleteTask } from '../services/api';
+import { updateTask } from '../services/api';
 
-const TaskCard = ({ task, onUpdate }) => {
+const TaskCard = ({ task, onUpdate, isSelected, onSelect }) => {
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -25,33 +26,12 @@ const TaskCard = ({ task, onUpdate }) => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this task?')) return;
-    
-    try {
-      await deleteTask(task.id);
-      onUpdate();
-    } catch (error) {
-      alert('Error deleting task');
-    }
-  };
-
-  const handleEdit = async () => {
-    const newTitle = prompt('Enter new title:', task.title);
-    if (newTitle === null) return;
-
-    const newDescription = prompt('Enter new description:', task.description || '');
-    
-    try {
-      await updateTask(task.id, newTitle, newDescription, task.status);
-      onUpdate();
-    } catch (error) {
-      alert('Error updating task');
-    }
-  };
-
   return (
-    <div className={`task-card ${task.status === 'completed' ? 'completed' : ''}`}>
+    <div 
+      className={`task-card ${task.status === 'completed' ? 'completed' : ''} ${isSelected ? 'selected' : ''}`}
+      onClick={() => onSelect && onSelect()}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="task-header">
         <div>
           <div className="task-title">
@@ -78,16 +58,8 @@ const TaskCard = ({ task, onUpdate }) => {
             ↻ Mark Pending
           </button>
         )}
-        <button className="btn btn-edit" onClick={handleEdit}>
-          ✏️ Edit
-        </button>
-        <button className="btn btn-delete" onClick={handleDelete}>
-          🗑️ Delete
-        </button>
       </div>
-    </div>
-  );
+    </div>  );
 };
 
 export default TaskCard;
-

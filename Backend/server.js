@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 require('dotenv').config();
 const pool = require("./config/db");
@@ -11,12 +12,21 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --------------------- MIDDLEWARE ---------------------
+app.use(compression()); // Enable gzip compression for all responses
 app.use(cors({
   origin: "*",
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type"
 }));
 app.use(express.json());
+
+// Cache control headers for API responses (60 seconds)
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    res.set('Cache-Control', 'public, max-age=60'); // Cache GET requests for 60 seconds
+  }
+  next();
+});
 
 // Serve static files from React build
 app.use(express.static(path.join(__dirname, '../Frontend/dist')));
@@ -30,9 +40,9 @@ async function initDB() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS tasks (
         id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
+        title TEXT NOT NULL,
         description TEXT,
-        status VARCHAR(20) DEFAULT 'pending',
+        status TEXT DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         completed_at TIMESTAMP

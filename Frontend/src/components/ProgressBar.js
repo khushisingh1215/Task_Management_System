@@ -1,39 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { fetchTasks } from '../services/api';
 
 const ProgressBar = () => {
-  const [tasks, setTasks] = useState([]);
+  const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0 });
   const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const loadStats = async () => {
+    try {
+      setLoading(true);
+      // Fetch with large limit to get all tasks for calculation
+      const response = await fetchTasks({ limit: 1000, page: 1 });
+      
+      const taskList = response?.tasks || (Array.isArray(response) ? response : []);
+      
+      if (Array.isArray(taskList) && taskList.length > 0) {
+        const completed = taskList.filter(t => t.status === 'completed').length;
+        const pending = taskList.filter(t => t.status === 'pending').length;
+        const total = taskList.length;
+        const percentage = Math.round((completed / total) * 100);
+        
+        setStats({ total, completed, pending });
+        setProgress(percentage);
+      } else {
+        setStats({ total: 0, completed: 0, pending: 0 });
+        setProgress(0);
+      }
+    } catch (error) {
+      console.error('Error loading progress stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    loadTasks();
-    const interval = setInterval(loadTasks, 5000); // Refresh every 5 seconds
+    loadStats();
+    // Refresh every 5 minutes instead of 10
+    const interval = setInterval(loadStats, 300000);
     return () => clearInterval(interval);
   }, []);
 
-  const loadTasks = async () => {
-    try {
-      const data = await fetchTasks();
-      setTasks(data);
-      calculateProgress(data);
-    } catch (error) {
-      console.error('Error loading tasks:', error);
-    }
-  };
-
-  const calculateProgress = (taskList) => {
-    if (taskList.length === 0) {
-      setProgress(0);
-      return;
-    }
-    const completed = taskList.filter(t => t.status === 'completed').length;
-    const percentage = Math.round((completed / taskList.length) * 100);
-    setProgress(percentage);
-  };
-
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter(t => t.status === 'completed').length;
-  const pendingTasks = tasks.filter(t => t.status === 'pending').length;
+  const { total: totalTasks, completed: completedTasks, pending: pendingTasks } = stats;
 
   return (
     <div className="progress-sidebar">
