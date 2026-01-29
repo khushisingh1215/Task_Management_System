@@ -70,12 +70,12 @@ npm run dev
 Expected output:
 ```
 [webpack-dev-server] Project is running at:
-[webpack-dev-server] Loopback: http://localhost:3002/
+[webpack-dev-server] Loopback: http://localhost:3001/
 ```
 
 ### 4. Open Application
 
-**Open browser**: http://localhost:3002
+**Open browser**: http://localhost:3001
 
 ---
 
@@ -222,33 +222,6 @@ LearningProject/
 
 ---
 
-## 🔧 Troubleshooting
-
-### Port Already In Use
-```bash
-# Kill process on port 3000
-taskkill /F /IM node.exe
-
-# Or specify different port in Backend/.env
-PORT=3001
-```
-
-### Database Connection Error
-- Ensure PostgreSQL is running
-- Verify database name is `taskmanager`
-- Check credentials in Backend/config/db.js
-
-### Frontend Not Loading
-- Ensure Backend is running first
-- Clear browser cache (Ctrl+Shift+Delete)
-- Check browser console for errors
-
-### Pagination Not Working
-- Refresh page
-- Check if backend returns correct page numbers
-- Verify API response includes `totalPages`
-
----
 
 ## 📊 Sample Data
 
